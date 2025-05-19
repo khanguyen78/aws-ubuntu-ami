@@ -34,3 +34,5 @@ variable "instance_profile_name" {
   type = string
 }
 
+data "aws_availability_zones" "available" {}
+
