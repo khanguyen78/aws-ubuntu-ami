@@ -1,0 +1,21 @@
+- name: Apply CIS hardening
+  hosts: all
+  become: yes
+  tasks:
+    - name: Ensure Ansible dependencies are installed
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - python3
+        - python3-apt
+
+    - name: Clone CIS playbook
+      git:
+        repo: "https://github.com/ansible-lockdown/UBUNTU20-CIS"
+        dest: /tmp/ubuntu20-cis
+        version: main
+
+    - name: Run CIS playbook
+      command: ansible-playbook /tmp/ubuntu20-cis/site.yml -i "localhost," -c local
+
