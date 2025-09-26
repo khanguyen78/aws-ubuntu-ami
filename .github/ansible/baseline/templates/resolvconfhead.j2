@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+
+{% for nameserver in baseline_resolvconf_nameservers %}
+nameserver {{ nameserver }}
+{% endfor %}
+search {{ baseline_resolvconf_search }}

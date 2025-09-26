@@ -1,0 +1,276 @@
+---
+# PAM tasks file for ubuntu 22.04
+
+- name: "pam | Remove pam_ccreds"
+  package:
+    name: libpam-ccreds
+    state: absent
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Install libpam-modules"
+  package:
+    name: libpam-modules
+    state: latest
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Install libpam-tmpdir"
+  package:
+    name: libpam-tmpdir
+    state: latest
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Remove libpam-cracklib-conflicts-with-pamtally2"
+  package:
+    name: libpam-cracklib
+    state: absent
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Ensure libpam-pwquality"
+  package:
+    name: libpam-pwquality
+    state: latest
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add conf file pam_tally2"
+  template:
+    dest: "{{ baseline_pam_tally2_config_path }}"
+    src: pam_tally2.j2
+    mode: '0644'
+  when:
+    - baseline_pam_setup
+
+
+- name: "pam | Add /etc/pam.d/atd"
+  template:
+    dest: /etc/pam.d/atd
+    src: pam.d/atd.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/chfn"
+  template:
+    dest: /etc/pam.d/chfn
+    src: pam.d/chfn.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/chpasswd"
+  template:
+    dest: /etc/pam.d/chpasswd
+    src: pam.d/chpasswd.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/chsh"
+  template:
+    dest: /etc/pam.d/chsh
+    src: pam.d/chsh.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/common-account"
+  template:
+    dest: /etc/pam.d/common-account
+    src: pam.d/common-account.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/common-auth"
+  template:
+    dest: /etc/pam.d/common-auth
+    src: pam.d/common-auth.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/common-password"
+  template:
+    dest: /etc/pam.d/common-password
+    src: pam.d/common-password.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/common-session"
+  template:
+    dest: /etc/pam.d/common-session
+    src: pam.d/common-session.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/common-session-noninteractive"
+  template:
+    dest: /etc/pam.d/common-session-noninteractive
+    src: pam.d/common-session-noninteractive.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/cron"
+  template:
+    dest: /etc/pam.d/cron
+    src: pam.d/cron.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/login"
+  template:
+    dest: /etc/pam.d/login
+    src: pam.d/login.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/newusers"
+  template:
+    dest: /etc/pam.d/newusers
+    src: pam.d/newusers.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/other"
+  template:
+    dest: /etc/pam.d/other
+    src: pam.d/other.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/passwd"
+  template:
+    dest: /etc/pam.d/passwd
+    src: pam.d/passwd.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/password-auth-ac"
+  template:
+    dest: /etc/pam.d/password-auth-ac
+    src: pam.d/password-auth-ac.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/polkit-1"
+  template:
+    dest: /etc/pam.d/polkit-1
+    src: pam.d/polkit-1.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/runuser"
+  template:
+    dest: /etc/pam.d/runuser
+    src: pam.d/runuser.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/runuser-l"
+  template:
+    dest: /etc/pam.d/runuser-l
+    src: pam.d/runuser-l.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/sshd"
+  template:
+    dest: /etc/pam.d/sshd
+    src: pam.d/sshd.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/su"
+  template:
+    dest: /etc/pam.d/su
+    src: pam.d/su.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/sudo"
+  template:
+    dest: /etc/pam.d/sudo
+    src: pam.d/sudo.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/systemd-user"
+  template:
+    dest: /etc/pam.d/systemd-user
+    src: pam.d/systemd-user.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup
+
+- name: "pam | Add /etc/pam.d/vmtoolsd"
+  template:
+    dest: /etc/pam.d/vmtoolsd
+    src: pam.d/vmtoolsd.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_pam_setup

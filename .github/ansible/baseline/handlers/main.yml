@@ -1,0 +1,52 @@
+---
+# handlers file for baseline ubuntu 22.04
+
+- name: nscd restart
+  systemd:
+    name: nscd
+    enabled: yes
+    state: restarted
+
+- name: resolvconf restart
+  systemd:
+    name: resolvconf
+    enabled: yes
+    state: restarted
+
+# - name: splunkforwarder enable bootstart
+#   shell: /opt/splunkforwarder/bin/splunk enable boot-start --answer-yes --no-prompt --accept-license
+#   args:
+#     executable: /bin/bash
+#   ignore_errors: yes
+
+# - name: splunkforwarder accept license modification
+#   lineinfile:
+#     path: /etc/init.d/splunk
+#     line: '  "/opt/splunkforwarder/bin/splunk" start --no-prompt --answer-yes --accept-license'
+#     regex: '.*"/opt/splunkforwarder/bin/splunk" start --no-prompt --answer-yes.*'
+#     state: present
+
+# - name: splunkforwarder permissions
+#   lineinfile:
+#     path: /etc/init.d/splunk
+#     line: '  "/opt/splunkforwarder/bin/splunk" start --no-prompt --answer-yes --accept-license'
+#     regex: '.*"/opt/splunkforwarder/bin/splunk" start --no-prompt --answer-yes.*'
+#     state: present
+
+- name: splunkforwarder permissions
+  file:
+    path: /opt/splunkforwarder
+    owner: splunkfwd
+    group: splunkfwd
+    mode: '0750'
+
+- name: splunkforwarder service enable
+  systemd:
+    name: splunkforwarder
+    enabled: yes
+
+- name: rsyslog restart
+  systemd:
+    name: rsyslog
+    enabled: yes
+    state: restarted

@@ -1,0 +1,18 @@
+---
+# tasks file for noc_repo
+
+- name: "noc_repo | Add apt config to not verify peer"
+  copy:
+    dest: "/etc/apt/apt.conf.d/95-{{ baseline_noc_repo_filename }}"
+    content: "Acquire::https::{{ baseline_noc_repo_hostname }}::Verify-Peer \"false\";"
+    mode: '0644'
+  when:
+    - baseline_noc_repo_setup
+
+- name: "noc_repo | Create noc repository apt repo entry"
+  apt_repository:
+    repo: "{{ baseline_noc_repo_url }}"
+    filename: "{{ baseline_noc_repo_filename }}"
+    state: present
+  when:
+    - baseline_noc_repo_setup

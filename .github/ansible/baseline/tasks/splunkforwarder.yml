@@ -1,0 +1,26 @@
+---
+# tasks file for splunkforwarder
+
+- name: splunkforwarder | Installing splunkforwarder
+  apt:
+    name: splunkforwarder
+    state: latest
+    force_apt_get: yes
+    update_cache: yes
+  when:
+    - baseline_splunkforwarder_setup
+
+- name: "splunkforwarder | Set up splunkforwarder service in /etc/systemd/system/ as splunkforwarder.service"
+  template:
+    dest: /etc/systemd/system/splunkforwarder.service
+    src: splunkforwarder.service.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_splunkforwarder_setup
+  notify:
+    # - splunkforwarder enable bootstart
+    # - splunkforwarder accept license modification
+    - splunkforwarder permissions
+    - splunkforwarder service enable

@@ -1,0 +1,13 @@
+---
+# rsyslog_overrides tasks file for ubuntu 22.04
+
+- name: "rsyslog_overrides | Override value for PreserveFQDN"
+  lineinfile:
+    dest: /etc/rsyslog.conf
+    line: '$PreserveFQDN on'
+    regexp: '^$PreserveFQDN.*'
+    state: present
+  when:
+    - baseline_rsyslog_overrides_setup
+  notify:
+    - rsyslog restart

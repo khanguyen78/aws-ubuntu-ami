@@ -1,0 +1,90 @@
+---
+# default variables for baseline
+
+# Variable defined to use as a when condition in case override needed - packages
+baseline_packages_setup: true
+
+# Variable defined to use as a when condition in case override needed - noc_repo
+baseline_noc_repo_setup: true
+baseline_noc_repo_url: deb [trusted=yes] https://repo.ctacdev.com ./
+baseline_noc_repo_filename: noc_repo
+baseline_noc_repo_hostname: repo.ctacdev.com
+
+# Variable defined to use as a when condition in case override needed - pam
+baseline_pam_setup: true
+baseline_pam_tally2_config_path: /usr/share/pam-configs/tally2
+baseline_pam_tally2_auth_retries: '4'
+baseline_pam_tally2_auth_lockout_time: '600'
+
+
+# Variable defined to use as a when condition in case override needed - ldap
+baseline_ldap_setup: true
+
+# Variable defined to use as a when condition in case override needed - hosts
+baseline_hosts_setup: true
+baseline_hosts_allow: "ALL: 10.100.0.0/255.255.0.0, 10.104.0.0/255.255.0.0, 10.105.0.0/255.255.0.0, 10.106.0.0/255.255.0.0, 10.107.0.0/255.255.0.0, .elb.amazonaws.com, 10.0.2.0/255.255.255.0"
+baseline_hosts_deny: "ALL: ALL"
+
+# Variable defined to use as a when condition in case override needed - resolvconf
+baseline_resolvconf_setup: true
+baseline_resolvconf_nameservers:
+  - 10.100.228.50
+  - 10.100.229.50
+baseline_resolvconf_search: east.noc.local
+
+# Variable defined to use as a when condition in case override needed - security
+baseline_security_setup: true
+baseline_access_conf_block_exceptions:
+  - (admins)
+  - jenkins
+  - splunk
+  - deploy
+  - ubuntu
+  - solr
+
+# Variable defined to use as a when condition in case override needed - ssh
+baseline_ssh_setup: true
+
+# Variable defined to use as a when condition in case override needed - securetty
+baseline_securetty_setup: true
+baseline_securettys:
+  - console
+
+# Variable defined to use as a when condition in case override needed - files
+baseline_files_setup: true
+
+# Variable defined to use as a when condition in case override needed - sudoers
+baseline_sudoers_setup: true
+baseline_sudoers:
+  - '%admins ALL=(ALL) NOPASSWD:ALL'
+  - 'ubuntu ALL=(ALL) NOPASSWD:ALL'
+
+# Variable defined to use as a when condition in case override needed - clamav
+baseline_clamav_setup: true
+
+# Variable defined to use as a when condition in case override needed - splunkforwarder
+baseline_splunkforwarder_setup: true
+
+# Variable defined to use as a when condition in case override needed - mailname
+baseline_mailname_setup: true
+baseline_mailname_domain: ctacorp.com
+baseline_mailname_dest_path: /etc/mailname
+
+# Variable defined to use as a when condition in case override needed - aide
+baseline_aide_setup: true
+
+# Variable defined to use as a when condition in case override needed - auditd
+baseline_auditd_overrides_setup: true
+
+# Variable defined to use as a when condition in case override needed - logrotate
+baseline_logrotate_overrides_setup: true
+
+
+# Variable defined to use as a when condition in case override needed - rsyslog
+baseline_rsyslog_overrides_setup: true
+
+# Variable defined to use as a when condition in case override needed - pam
+baseline_bat_setup: true
+baseline_bat_version: '0.21.0'
+baseline_bat_conf_path: /etc/bat.conf
+baseline_bat_profile_path: /etc/profile.d/bat.sh

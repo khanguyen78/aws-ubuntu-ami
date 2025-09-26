@@ -1,0 +1,24 @@
+---
+# Ldap tasks file for ubuntu 22.04
+
+- name: "ldap | Ensure required LDAP packages installed"
+  apt:
+    name:
+      - libnss-ldap
+      - ldap-utils
+      - nscd
+    state: latest
+  when:
+    - baseline_ldap_setup
+
+- name: "ldap | Create nsswitch.conf file"
+  template:
+      src: nsswitch.conf.j2
+      dest: /etc/nsswitch.conf
+      owner: root
+      group: root
+      mode: '0644'
+  notify:
+      - nscd restart
+  when:
+    - baseline_ldap_setup

@@ -1,0 +1,97 @@
+---
+# tasks file for baseline
+
+- name: Import packages.yml if OS distribution is Ubuntu
+  import_tasks: packages.yml
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Import noc_repo.yml if OS distribution is Ubuntu
+  import_tasks: noc_repo.yml
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Import pam.yml if OS distribution is Ubuntu
+  import_tasks: pam.yml
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Import ldap.yml if OS distribution is Ubuntu
+  import_tasks: ldap.yml
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Import hosts.yml if OS distribution is Ubuntu
+  import_tasks: hosts.yml
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Import resolvconf.yml if OS distribution is Ubuntu
+  import_tasks: resolvconf.yml
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Import security.yml if OS distribution is Ubuntu
+  import_tasks: security.yml
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Import ssh.yml if OS distribution is Ubuntu
+  import_tasks: ssh.yml
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Import securetty.yml if OS distribution is Ubuntu
+  import_tasks: securetty.yml
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Import files.yml if OS distribution is Ubuntu
+  import_tasks: files.yml
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Import sudoers.yml if OS distribution is Ubuntu
+  import_tasks: sudoers.yml
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Import clamav.yml if OS distribution is Ubuntu
+  import_tasks: clamav.yml
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Import splunkforwarder.yml if OS distribution is Ubuntu
+  import_tasks: splunkforwarder.yml
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Import mailname.yml if OS distribution is Ubuntu
+  import_tasks: mailname.yml
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Import aide.yml if OS distribution is Ubuntu
+  import_tasks: aide.yml
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Import auditd_overrides.yml if OS distribution is Ubuntu
+  import_tasks: auditd_overrides.yml
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Import logrotate_overrides.yml if OS distribution is Ubuntu
+  import_tasks: logrotate_overrides.yml
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Import rsyslog_overrides.yml if OS distribution is Ubuntu
+  import_tasks: rsyslog_overrides.yml
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: Import bat.yml if OS distribution is Ubuntu
+  import_tasks: bat.yml
+  become: true
+  when: ansible_distribution == "Ubuntu"

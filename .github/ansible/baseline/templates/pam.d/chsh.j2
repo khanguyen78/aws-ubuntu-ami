@@ -1,0 +1,8 @@
+# {{ ansible_managed }}
+# The PAM configuration file for the Shadow `chsh' service
+
+auth required pam_shells.so
+auth sufficient	pam_rootok.so
+@include common-auth
+@include common-account
+@include common-session

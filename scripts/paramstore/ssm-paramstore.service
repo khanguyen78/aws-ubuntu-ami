@@ -1,0 +1,13 @@
+[Unit]
+Description=Parameter Store
+After=network.target
+
+[Service]
+EnvironmentFile=-/etc/environment
+Type=oneshot
+ExecStart=/usr/local/bin/init-ssm-paramstore.sh
+RemainAfterExit=true
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target

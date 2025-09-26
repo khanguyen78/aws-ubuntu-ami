@@ -1,0 +1,4 @@
+# {{ ansible_managed }}
+{% for sudoer in baseline_sudoers -%}
+{{ sudoer }}
+{% endfor %}

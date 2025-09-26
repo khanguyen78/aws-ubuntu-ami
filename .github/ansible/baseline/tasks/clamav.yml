@@ -1,0 +1,22 @@
+---
+# tasks file for packages - Ubuntu
+
+- name: "clamav | install clamav packages"
+  apt:
+    name:
+      - clamav
+      - clamdscan
+      - clamav-daemon
+    state: latest
+  when:
+    - baseline_clamav_setup
+
+- name: "clamav | Update /etc/clamav/clamd.conf"
+  template:
+    dest: /etc/clamav/clamd.conf
+    src: clamd.conf.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_clamav_setup

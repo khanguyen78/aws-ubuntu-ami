@@ -1,0 +1,34 @@
+---
+# Bat tasks file for ubuntu 22.04
+
+- name: "bat | Install bat {{ baseline_bat_version }} deb from URL"
+  apt:
+    deb: "https://github.com/sharkdp/bat/releases/download/v{{ baseline_bat_version }}/bat_{{ baseline_bat_version }}_amd64.deb"
+    state: present
+  when:
+    - baseline_bat_setup
+
+
+- name: "bat | Add {{ baseline_bat_conf_path }}"
+  template:
+    dest: "{{ baseline_bat_conf_path }}"
+    src: bat.conf.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_bat_setup
+
+- name: "bat | Add {{ baseline_bat_profile_path }}"
+  blockinfile:
+    path: "{{ baseline_bat_profile_path }}"
+    create: yes
+    state: present
+    block: |
+      BAT_CONFIG_PATH="{{ baseline_bat_conf_path }}"
+      export BAT_CONFIG_PATH
+    mode: '0755'
+    owner: root
+    group: root
+  when:
+    - baseline_bat_setup

@@ -1,0 +1,81 @@
+name: Build Ubuntu CIS AMI
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build AMI
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Packer
+      uses: hashicorp/setup-packer@v2
+
+    - name: Install Ansible
+      run: |
+        sudo apt-get update &> /dev/null
+        sudo apt-get install -y ansible
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Install plugins
+      run: |
+        packer plugins install github.com/hashicorp/amazon
+        packer plugins install github.com/hashicorp/ansible
+
+    - name: Get LDAP_BASE parameter from SSM
+      id: get_param_ldap_base
+      run: |
+        PARAM=$(aws ssm get-parameter --name "/svcs/ldap/base" --with-decryption --query "Parameter.Value" --output text)
+        echo "LDAP_BASE=$PARAM" >> $GITHUB_ENV
+    
+    - name: Get LDAP_URI parameter from SSM
+      id: get_param_ldap_uri
+      run: |
+        PARAM=$(aws ssm get-parameter --name "/svcs/ldap/base" --with-decryption --query "Parameter.Value" --output text)
+        echo "LDAP_URI=$PARAM" >> $GITHUB_ENV
+    
+    - name: Get LDAP_ROOTBINDDN parameter from SSM
+      id: get_param_ldap_rootbinddn
+      run: |
+        PARAM=$(aws ssm get-parameter --name "/svcs/ldap/base" --with-decryption --query "Parameter.Value" --output text)
+        echo "LDAP_ROOTBINDDN=$PARAM" >> $GITHUB_ENV
+    
+    - name: Get LDAP_CRT parameter from SSM
+      id: get_ldap_crt
+      run: |
+        PARAM=$(aws ssm get-parameter  --name "/svcs/ldap/cert" --with-decryption --query 'Parameter.Value' --output text)
+        #echo "LDAP_CERT=$PARAM" >> $GITHUB_ENV
+        sudo mkdir -p /usr/local/share/ca-certificates
+        ls -l /usr/local/share
+        sudo echo " *** LDAP CERT ***"
+        sudo echo "$LDAP_CERT" >> ldap.crt
+        sudo echo " *** Trying to insert CERT into ca-certificates directory ***"
+        sudo cp ldap.crt /usr/local/share/ca-certificates/ldap.crt
+
+        
+    - name: Initialize packer
+      run: |
+        cd ./.github/packer 
+        packer init ubuntu-cis-ami.pkr.hcl
+
+    - name: Validate Packer template
+      run: |
+        cd ./.github/packer 
+        packer validate ubuntu-cis-ami.pkr.hcl
+
+    - name: Build AMI
+      run: | 
+        cd ./.github/packer 
+        packer build ubuntu-cis-ami.pkr.hcl
+

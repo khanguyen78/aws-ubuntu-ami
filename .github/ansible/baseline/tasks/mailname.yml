@@ -1,0 +1,14 @@
+---
+# mailname tasks file for ubuntu 22.04
+## This sets /etc/mailname to consist ctacorp.com so that any email to root gets sent to root@ctacorp.com
+## Facilitates AIDE email, which is also sent to root@ctacorp.com
+
+- name: "mailname | Modify /etc/mailname"
+  template:
+    dest: "{{ baseline_mailname_dest_path }}"
+    src: mailname.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_mailname_setup

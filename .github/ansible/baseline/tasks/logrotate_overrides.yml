@@ -1,0 +1,24 @@
+---
+# logrotate_overrides tasks file for ubuntu 22.04
+
+- name: "logrotate_overrides | Override value for create"
+  lineinfile:
+    dest: /etc/logrotate.conf
+    line: create 0644 syslog adm
+    regexp: '^create 0640 root utmp'
+    state: present
+  when:
+    - baseline_logrotate_overrides_setup
+  notify:
+    - rsyslog restart
+
+- name: "logrotate_overrides | Override value for su"
+  lineinfile:
+    dest: /etc/logrotate.conf
+    line: su root syslog
+    regexp: '^su root.*'
+    state: present
+  when:
+    - baseline_logrotate_overrides_setup
+  notify:
+    - rsyslog restart

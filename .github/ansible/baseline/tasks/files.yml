@@ -1,0 +1,41 @@
+---
+# files tasks file for ubuntu 22.04
+
+- name: "files | Update mode 0755 for files"
+  file:
+    path: "{{ item }}"
+    mode: '0755'
+  ignore_errors: yes
+  with_items:
+    - '/bin/mount'
+    - '/bin/umount'
+    - '/bin/fusermount'
+    - '/usr/bin/arping'
+    - '/usr/bin/mtr'
+    - '/usr/bin/traceroute6'
+    - '/usr/bin/traceroute6.iputils'
+  when:
+    - baseline_files_setup
+
+- name: "files | Fix permission on sendmail files if needed"
+  file:
+    path: "{{ item }}"
+    mode: '2751'
+    owner: smmta
+    group: smmsp
+  ignore_errors: yes
+  with_items:
+    - '/var/lib/sendmail'
+  when:
+    - baseline_files_setup
+
+- name: "files | Remove files"
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /usr/bin/rlogin
+    - /usr/bin/rsh
+    - /usr/bin/rcp
+  when:
+    - baseline_files_setup

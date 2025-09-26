@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+
+auth sufficient pam_rootok.so
+auth required pam_wheel.so use_uid group=sugroup
+session required pam_env.so readenv=1
+session required pam_env.so readenv=1 envfile=/etc/default/locale
+session  optional pam_mail.so nopen
+@include common-auth
+@include common-account
+@include common-session

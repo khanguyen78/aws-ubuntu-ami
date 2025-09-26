@@ -1,0 +1,176 @@
+---
+- name: Install LDAP client packages on Ubuntu
+  hosts: all
+  become: yes
+  vars:
+    ldap_base_dn: "dc=noc,dc=local"
+    ldap_uri: "ldap://10.100.228.50"
+    sssd_conf_path: "/etc/sssd/sssd.conf"
+    ldap_binddn: ${{ lookup('env', 'LDAP_BINDDN')  }}
+    ldap_bindpw: ${{ lookup('env', 'LDAP_BINDPW')  }}
+    # Ansible variable for utilizing appropriate python
+    ansible_python_interpreter: /usr/bin/python3
+
+    # Overriding variable from `patching` role.
+    patching_reboot_system: false
+
+    # Overriding variable from `darkwizard242.jq` role.
+    jq_desired_state: latest
+
+    # Overriding variable from `darkwizard242.httpie` role.
+    httpie_desired_state: latest
+
+    # Overriding default values for role variables of darkwizard242.duf
+    duf_desired_state: present
+    duf_version: 0.7.0
+
+    # Overriding CIS ubuntu 22.04 vars
+    # DISABLE 1.1.2, 1.1.3, 1.1.4 and 1.1.5 as they are not required for /tmp since we do our own partitioning.
+    ubuntu_2204_cis_section1_rule_1_1_2: false
+    ubuntu_2204_cis_section1_rule_1_1_3: false
+    ubuntu_2204_cis_section1_rule_1_1_4: false
+    ubuntu_2204_cis_section1_rule_1_1_5: false
+    # Overriding CIS ubuntu 22.04 vars
+    # DISABLE 1.1.1.6 as it results with error | modprobe: FATAL: Module squashfs is builtin.
+    ubuntu_2204_cis_section1_rule_1_1_1_6: false
+
+    # Override for custom messages
+    # ubuntu_2204_cis_section1_rule_1_8_1_1_params_source: etc.motd.j2
+    # ubuntu_2204_cis_section1_rule_1_8_1_2_params_source: etc.issue.j2
+    # ubuntu_2204_cis_section1_rule_1_8_1_3_params_source: etc.issue.net.j2
+    ubuntu_2204_cis_section1_rule_1_7_1_params_source: etc.motd.j2
+    ubuntu_2204_cis_section1_rule_1_7_2_params_source: etc.issue.j2
+    ubuntu_2204_cis_section1_rule_1_7_3_params_source: etc.issue.net.j2
+
+
+    # Override value for RootDistanceMaxSec due to tenable policies
+    # ubuntu_2204_cis_section2_rule_2_2_1_2_params_timesyncd_service_conffile_ntp_value: 0.pool.ntp.org
+    # ubuntu_2204_cis_section2_rule_2_2_1_2_params_timesyncd_service_conffile_fallbackntp_value: ntp.ubuntu.com
+    # ubuntu_2204_cis_section2_rule_2_2_1_2_params_timesyncd_service_conffile_rootdistancemaxsec_value: '5'
+    ubuntu_2204_cis_section2_rule_2_1_1_2_params_timesyncd_service_conffile_ntp_value: 0.pool.ntp.org
+    ubuntu_2204_cis_section2_rule_2_1_1_2_params_timesyncd_service_conffile_fallbackntp_value: ntp.ubuntu.com
+    ubuntu_2204_cis_section2_rule_2_1_1_2_params_timesyncd_service_conffile_rootdistancemaxsec_value: '5'
+
+    # To set ipv6 as required .... To use ufw is as the firewall
+    ubuntu_2204_cis_require_ipv6: true
+    ubuntu_2204_cis_firewall: ufw
+
+    ## DISABLE RULES THAT BREAK CONNECTIVITY TO THE SYSTEM
+    # ufw rule that denies outgoing connections
+    ubuntu_2204_cis_section3_rule_ufw_default_deny_outgoing: false
+
+        # nftable rule that blocks all connection
+    ubuntu_2204_cis_section3_rule_3_5_2_8: false
+
+    # override value for max_log_file of auditd
+    ubuntu_2204_cis_auditd_maxlogfile: '32'
+
+    # iptables rule that denies incoming/outgoing connection for ipv4 and ipv6
+    ubuntu_2204_cis_section3_rule_iptables_ipv4_default_deny_input: false
+    ubuntu_2204_cis_section3_rule_iptables_ipv4_default_deny_output: false
+    ubuntu_2204_cis_section3_rule_iptables_ipv6_default_deny_input: false
+    ubuntu_2204_cis_section3_rule_iptables_ipv6_default_deny_output: false
+
+    # set the pam min length to 16 and use all minclasses
+    ubuntu_2204_cis_require_pam_pwquality:
+      - key: 'minlen'
+        value: '16'
+      - key: 'minclass'
+        value: '4'
+
+    # Overriding variable from `baseline` role.
+    baseline_packages_setup: true
+    baseline_local_repo_setup: true
+    baseline_pam_setup: true
+    
+  tasks:
+    - name: Update APT cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install LDAP packages
+      ansible.builtin.apt:
+        name:
+          - sssd
+          - libnss-sss
+          - libpam-sss
+          - ldap-utils
+        state: present
+
+
+    - name: Configure /etc/sssd/sssd.conf
+      copy:
+        dest: "{{ sssd_conf_path }}"
+        content: |
+          [sssd]
+          services = nss, pam
+          domains = LDAP
+
+          [domain/LDAP]
+          id_provider = ldap
+          auth_provider = ldap
+          chpass_provider = ldap
+          ldap_uri = {{ ldap_uri }}
+          ldap_search_base = {{ ldap_base_dn }}
+          ldap_default_bind_dn = {{ ldap_binddn }}
+          ldap_default_authtok = {{ ldap_bindpw }}
+          ldap_tls_reqcert = never
+          enumerate = true
+          cache_credentials = true
+        owner: root
+        group: root
+        mode: '0600'
+
+    - name: Configure NSS to use SSSD
+      lineinfile:
+        path: /etc/nsswitch.conf
+        regexp: '^({{ item.key }})'
+        line: '{{ item.key }}: {{ item.value }}'
+        backrefs: yes
+      loop:
+        - { key: "passwd", value: "files sss" }
+        - { key: "group",  value: "files sss" }
+        - { key: "shadow", value: "files sss" }
+
+    - name: Ensure PAM uses SSSD (common-auth)
+      copy:
+        dest: /etc/pam.d/common-auth
+        content: |
+          auth    [success=1 default=ignore]      pam_unix.so nullok_secure
+          auth    requisite                       pam_deny.so
+          auth    required                        pam_permit.so
+          auth    [success=1 default=ignore]      pam_sss.so use_first_pass
+
+    - name: Ensure PAM uses SSSD (common-account)
+      copy:
+        dest: /etc/pam.d/common-account
+        content: |
+          account required      pam_unix.so
+          account sufficient    pam_sss.so
+
+    - name: Ensure PAM uses SSSD (common-password)
+      copy:
+        dest: /etc/pam.d/common-password
+        content: |
+          password required     pam_unix.so obscure sha512
+          password sufficient   pam_sss.so
+
+    - name: Ensure PAM uses SSSD (common-session)
+      copy:
+        dest: /etc/pam.d/common-session
+        content: |
+          session required      pam_unix.so
+          session optional      pam_sss.so
+    
+    - name: Ensure PAM creates home directories on login
+      lineinfile:
+        path: /etc/pam.d/common-session
+        insertafter: 'session required      pam_unix.so'
+        line: 'session required      pam_mkhomedir.so skel=/etc/skel umask=0022'
+        state: present
+
+    - name: Enable and restart SSSD
+      service:
+        name: sssd
+        state: restarted
+        enabled: yes

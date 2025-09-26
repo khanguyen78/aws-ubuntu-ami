@@ -1,0 +1,14 @@
+---
+# resolvconf tasks file for ubuntu 22.04
+
+- name: "resolvconf | Update /etc/resolvconf/resolv.conf.d/head"
+  template:
+    dest: /etc/resolvconf/resolv.conf.d/head
+    src: resolvconfhead.j2
+    mode: '0644'
+    owner: root
+    group: root
+  when:
+    - baseline_resolvconf_setup
+  notify:
+    - resolvconf restart

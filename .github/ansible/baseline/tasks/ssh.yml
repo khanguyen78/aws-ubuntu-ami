@@ -1,0 +1,106 @@
+---
+# ssh tasks file for ubuntu 22.04
+
+- name: "ssh | Enable PasswordAuthentication in sshd_config"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: PasswordAuthentication yes
+    regexp: '^PasswordAuthentication.*'
+    state: present
+  when:
+    - baseline_ssh_setup
+
+- name: "ssh | Configure SyslogFacility in sshd_config"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: SyslogFacility AUTH
+    regexp: '^SyslogFacility.*'
+    state: present
+  when:
+    - baseline_ssh_setup
+
+- name: "ssh | Configure StrictModes in sshd_config"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: StrictModes yes
+    regexp: '^StrictModes.*'
+    state: present
+  when:
+    - baseline_ssh_setup
+
+- name: "ssh | Configure PubkeyAuthentication in sshd_config"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: PubkeyAuthentication yes
+    regexp: '^PubkeyAuthentication.*'
+    state: present
+  when:
+    - baseline_ssh_setup
+
+- name: "ssh | Configure X11DisplayOffset in sshd_config"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: X11DisplayOffset 10
+    regexp: '^X11DisplayOffset.*'
+    state: present
+  when:
+    - baseline_ssh_setup
+
+- name: "ssh | Configure PrintLastLog in sshd_config"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: PrintLastLog yes
+    regexp: '^PrintLastLog.*'
+    state: present
+  when:
+    - baseline_ssh_setup
+
+- name: "ssh | Configure TCPKeepAlive in sshd_config"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: TCPKeepAlive yes
+    regexp: '^TCPKeepAlive.*'
+    state: present
+  when:
+    - baseline_ssh_setup
+
+- name: "ssh | Configure TCPKeepAlive in sshd_config"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: TCPKeepAlive yes
+    regexp: '^TCPKeepAlive.*'
+    state: present
+  when:
+    - baseline_ssh_setup
+
+- name: "ssh | Remove AllowUsers in sshd_config"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^AllowUsers.*'
+    state: absent
+  when:
+    - baseline_ssh_setup
+
+- name: "ssh | Remove AllowUsers in sshd_config"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^AllowUsers.*'
+    state: absent
+  when:
+    - baseline_ssh_setup
+
+- name: "ssh | Remove AllowGroups in sshd_config"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^AllowGroups.*'
+    state: absent
+  when:
+    - baseline_ssh_setup
+
+- name: "ssh | Remove DenyGroups in sshd_config"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: '^DenyGroups.*'
+    state: absent
+  when:
+    - baseline_ssh_setup

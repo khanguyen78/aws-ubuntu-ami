@@ -1,0 +1,17 @@
+---
+# tasks file for aide - Ubuntu
+## To set up a cron for aide db update and utilizing new one
+
+- name: "aide | move new db to be used as current db"
+  cron:
+    name: "Reset AIDE DB after a few hours after AIDE Scan"
+    minute: '0'
+    hour: '7'
+    day: '*'
+    month: '*'
+    weekday: '*'
+    user: root
+    state: present
+    job: 'mv -v /var/lib/aide/aide.db.new /var/lib/aide/aide.db'
+  when:
+    - baseline_aide_setup

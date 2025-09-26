@@ -1,0 +1,20 @@
+---
+# auditd_overrides tasks file for ubuntu 22.04
+
+- name: "auditd_overrides | Override value for num_logs"
+  lineinfile:
+    dest: /etc/audit/auditd.conf
+    line: num_logs = 50
+    regexp: '^num_logs =.*'
+    state: present
+  when:
+    - baseline_auditd_overrides_setup
+
+- name: "auditd_overrides | Override value for max_log_file_action"
+  lineinfile:
+    dest: /etc/audit/auditd.conf
+    line: max_log_file_action = rotate
+    regexp: '^max_log_file_action =.*'
+    state: present
+  when:
+    - baseline_auditd_overrides_setup

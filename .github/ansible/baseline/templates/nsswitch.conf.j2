@@ -1,0 +1,22 @@
+# {{ ansible_managed }}
+# /etc/nsswitch.conf
+
+passwd: compat ldap [NOTFOUND=return]
+group: compat ldap [NOTFOUND=return]
+shadow: compat ldap [NOTFOUND=return]
+gshadow: files
+
+#passwd: files ldap
+#group: files ldap
+#shadow: files ldap
+#gshadow: files ldap
+
+hosts:          files dns
+networks:       files
+
+protocols:      db files
+services:       db files
+ethers:         db files
+rpc:            db files
+
+netgroup: nis

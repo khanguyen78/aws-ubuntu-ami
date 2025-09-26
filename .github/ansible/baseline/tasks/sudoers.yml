@@ -1,0 +1,10 @@
+---
+# sudoers tasks file for ubuntu 22.04
+
+- name: "sudoers | Add custom sudoers"
+  template:
+    dest: /etc/sudoers.d/custom
+    src: sudoers.j2
+    mode: '0640'
+  when:
+    - baseline_sudoers_setup

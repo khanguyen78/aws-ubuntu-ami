@@ -1,0 +1,6 @@
+# {{ ansible_managed }}
+# /etc/securetty: list of terminals on which root is allowed to login.
+
+{% for tty in baseline_securettys -%}
+{{ tty }}
+{% endfor %}

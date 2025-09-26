@@ -1,0 +1,39 @@
+---
+# tasks file for packages - Ubuntu
+
+- name: "packages | Remove undesired packages"
+  apt:
+    name:
+      - snmpd
+      - benchmark-biosdevname
+      - apport
+      - whoopsie
+      - nis
+    state: absent
+    purge: true
+  when:
+    - baseline_packages_setup
+
+- name: "packages | Add baseline packages"
+  apt:
+    name:
+      - resolvconf
+      - multitail
+      - htop
+      - ethtool
+      - git
+      - nmap
+      - unzip
+      - apt-transport-https
+      - ca-certificates
+      - software-properties-common
+      - zip
+      - lvm2
+      - nscd
+      - libpam-pwquality
+      - ldap-auth-client
+      - ldap-auth-config
+      - apt-transport-s3
+    state: latest
+  when:
+    - baseline_packages_setup
